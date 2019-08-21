@@ -43,6 +43,13 @@ public:
 		set_age(age);
 		cout << "HConstructor:\t" << this << endl;
 	}
+	Human(Human& other)
+	{
+		this->first_name = other.first_name;
+		this->last_name = other.last_name;
+		this->age = other.age;
+		cout << "HCopyConstructor:" << this << endl;
+	}
 	virtual ~Human()
 	{
 		cout << "HDestructor:\t" << this << endl;
@@ -53,7 +60,13 @@ public:
 	{
 		cout << last_name << " " << first_name << " " << age << " лет.\n";
 	}
+	virtual void some_method() = 0;
 };
+
+ostream& operator<<(ostream& os, const Human& obj)
+{
+	return os << obj.get_last_name() << " " << obj.get_first_name() << ", " << obj.get_age() << " лет";
+}
 
 class Student :public Human
 {
@@ -113,7 +126,18 @@ public:
 		Human::info();
 		cout << specialty << " " << group << " " << year << " курс, успеваемость" << rating << endl;
 	}
+
+	void some_method()
+	{
+		cout << "ѕревед, € студенд" << endl;
+	}
 };
+
+ostream& operator<<(ostream& os, const Student& obj)
+{
+	os << (Human&)obj;
+	return os << obj.get_specialty() << ", " << obj.get_group() << ", курс обучени€ " << obj.get_year() << "-й, успеваемость " << obj.get_rating();
+}
 
 class Teacher :public Human
 {
@@ -155,7 +179,19 @@ public:
 		Human::info();
 		cout << "преподает " << specialty << " опыт преподавани€ " << experience << " лет\n";
 	}
+	void some_method()
+	{
+		cout << "—ам привет" << endl;
+	}
 };
+
+ostream& operator<<(ostream& os, const Teacher& obj)
+{
+	os << (Human&)obj;
+	return os << ", специальность " << obj.get_specialty() 
+		<< ", опыт преподавани€ " << obj.get_experience() 
+		<< " лет";
+}
 
 class Graduate:public Student
 {
@@ -184,7 +220,14 @@ public:
 		Student::info();
 		cout << " тема дипломного проекта: " << diploma_theme << endl;
 	}
+	
 };
+
+ostream& operator<<(ostream& os, const Graduate& obj)
+{
+	os << (Student&)obj << endl;
+	return os << "“ема дипломного проекта: " << obj.get_diploma_theme();
+}
 
 void main()
 {
@@ -222,7 +265,13 @@ void main()
 		cout << delimiter << endl;
 		cout << typeid(*group[i]).name() << endl;
 		//group[i]->info();
-		cout << *group[i] << endl;
+		if (typeid(*group[i]) == typeid(Student))
+			cout << *dynamic_cast<Student*>(group[i]) << endl;
+		if (typeid(*group[i]) == typeid(Teacher))
+			cout << *dynamic_cast<Teacher*>(group[i]) << endl;
+		if (typeid(*group[i]) == typeid(Graduate))
+			cout << *dynamic_cast<Graduate*> (group[i]) << endl;
+		//cout << *group[i] << endl;
 	}
 
 	for (int i = 0; i < sizeof(group) / sizeof(Human*); i++)
@@ -230,3 +279,4 @@ void main()
 		delete group[i];
 	}
 }
+//virtual type name(parameters) = 0;	//ќбъ€вление чисто виртуального метода.
