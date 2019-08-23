@@ -46,7 +46,7 @@ public:
 	}
 	void push_back(int Data)
 	{
-		
+
 	}
 
 	void print()
