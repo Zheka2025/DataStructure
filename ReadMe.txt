@@ -1,5 +1,11 @@
+TODO:
+CopyConstructor;
+CopyAssignment;
+operator+;
+
+DONE:
 В ForwardList добавить метод
-erase() - удаляет значение по индексу.
+erase() - удаляет значение по индексу.DONE
 
 push_back();	DONE
 pop_front();	DONE

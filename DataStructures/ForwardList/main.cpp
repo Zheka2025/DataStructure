@@ -1,7 +1,13 @@
 #include<iostream>
 using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 
 #define tab "\t"
+
+//#define BASE_CHECK
+//#define INDEX_OPERATOR_CHECK
 
 class Element
 {
@@ -31,11 +37,21 @@ class ForwardList
 	Element* Head;	//Указатель на начало списка
 	unsigned int size;
 public:
+	const int get_size()const
+	{
+		return this->size;
+	}
 	ForwardList()
 	{
 		this->Head = nullptr;
 		this->size = 0;
 		cout << "LConstructor:\t" << this << endl;
+	}
+	ForwardList(int size):ForwardList()
+	{
+		/*this->Head = nullptr;
+		this->size = 0;*/
+		while (size--)push_front(0);
 	}
 	~ForwardList()
 	{
@@ -43,14 +59,23 @@ public:
 		cout << "LDestructor:\t" << this << endl;
 	}
 
+	//			Operators:
+	int& operator[](int index)
+	{
+		Element* Temp = Head;
+		for (int i = 0; i < index; i++)Temp = Temp->pNext;
+		return Temp->Data;
+	}
+
 	//			Добавление элементов в список:
 	void push_front(int Data)
 	{
 		//Data - добавляемое значение.
 		//1) Создаем элемент, в который можно положить добавляемое значение:
-		Element* New = new Element(Data);
+		/*Element* New = new Element(Data);
 		New->pNext = Head;
-		Head = New;
+		Head = New;*/
+		Head = new Element(Data, Head);
 		size++;
 	}
 	void push_back(int Data)
@@ -83,9 +108,10 @@ public:
 		{
 			Temp = Temp->pNext;
 		}
-		Element* New = new Element(data);
+		/*Element* New = new Element(data);
 		New->pNext = Temp->pNext;
-		Temp->pNext = New;
+		Temp->pNext = New;*/
+		Temp->pNext = new Element(data, Temp->pNext);
 		size++;
 	}
 
@@ -149,15 +175,15 @@ void main()
 {
 	setlocale(LC_ALL, "");
 	int n;		//Количество элементов
-	cout << "Введите количество элементов: ";
-	cin >> n;
+	cout << "Введите количество элементов: ";	cin >> n;
+#ifdef BASE_CHECK
 	ForwardList fl;
 	for (int i = 0; i < n; i++)
 	{
 		fl.push_front(rand() % 100);
 	}
 	fl.print();
-	/*fl.push_back(123);	fl.print();
+	fl.push_back(123);	fl.print();
 	fl.pop_back();	fl.print();
 
 	int index;
@@ -169,11 +195,30 @@ void main()
 
 	cout << "Введите индекс удавляемого элемента: "; cin >> index;
 	fl.erase(index);
-	fl.print();*/
+	fl.print();
 
 	/*ForwardList fl2;
 	fl2.push_back(3);
 	fl2.push_back(5);
 	fl2.push_back(8);
 	fl2.print();*/
+#endif // BASE_CHECK
+
+#ifdef INDEX_OPERATOR_CHECK
+	//TODO: exception handling in []
+	ForwardList fl(n);
+	fl.print();
+
+	cout << int() << endl;
+	for (int i = 0; i < fl.get_size(); i++)
+	{
+		fl[i] = rand() % 100;
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		cout << fl[i] << tab;
+	}
+	cout << endl;
+#endif // INDEX_OPERATOR_CHECK
+
 }
