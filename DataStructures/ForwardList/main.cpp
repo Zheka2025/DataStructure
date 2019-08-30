@@ -39,6 +39,7 @@ public:
 	}
 	~ForwardList()
 	{
+		while (Head)pop_front();
 		cout << "LDestructor:\t" << this << endl;
 	}
 
@@ -111,6 +112,16 @@ public:
 
 	void erase(int index)
 	{
+		if (index == 0)
+		{
+			pop_front();
+			return;
+		}
+		if (index >= size)
+		{
+			cout << "Error: out of range" << endl;
+			return;
+		}
 		Element* Temp = Head;
 		for (int i = 0; i < index - 1; i++)Temp = Temp->pNext;
 		Element* buffer = Temp->pNext;
@@ -145,7 +156,8 @@ void main()
 	{
 		fl.push_front(rand() % 100);
 	}
-	fl.push_back(123);	fl.print();
+	fl.print();
+	/*fl.push_back(123);	fl.print();
 	fl.pop_back();	fl.print();
 
 	int index;
@@ -155,9 +167,13 @@ void main()
 	fl.insert(index, data);
 	fl.print();
 
-	ForwardList fl2;
+	cout << "Введите индекс удавляемого элемента: "; cin >> index;
+	fl.erase(index);
+	fl.print();*/
+
+	/*ForwardList fl2;
 	fl2.push_back(3);
 	fl2.push_back(5);
 	fl2.push_back(8);
-	fl2.print();
+	fl2.print();*/
 }
