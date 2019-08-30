@@ -109,6 +109,17 @@ public:
 		size--;
 	}
 
+	void erase(int index)
+	{
+		Element* Temp = Head;
+		for (int i = 0; i < index - 1; i++)Temp = Temp->pNext;
+		Element* buffer = Temp->pNext;
+
+		Temp->pNext = Temp->pNext->pNext;
+		delete buffer;
+		size--;
+	}
+
 	void print()
 	{
 		Element* Temp = Head;//Temp - Итератор.
