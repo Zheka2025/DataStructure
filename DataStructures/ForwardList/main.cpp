@@ -10,45 +10,100 @@ using std::endl;
 //#define INDEX_OPERATOR_CHECK
 //#define CONSTRUCTORS_CHECK
 
-class Element
-{
-	int Data;		//Значение элемента
-	Element* pNext;	//Адрес следующего элемента
-	static int count;
-public:
-	Element(int Data, Element* pNext = nullptr)
-	{
-		this->Data = Data;
-		this->pNext = pNext;
-		count++;
-		cout << "EConstructor:\t" << this << endl;
-	}
-	~Element()
-	{
-		count--;
-		cout << "EDestructor:\t" << this << endl;
-	}
-	friend class ForwardList;
-};
 
-int Element::count = 0;
 
 class ForwardList
 {
+	class Element
+	{
+		int Data;		//Значение элемента
+		Element* pNext;	//Адрес следующего элемента
+		static int count;
+	public:
+		Element(int Data, Element* pNext = nullptr)
+		{
+			this->Data = Data;
+			this->pNext = pNext;
+			count++;
+			cout << "EConstructor:\t" << this << endl;
+		}
+		~Element()
+		{
+			count--;
+			cout << "EDestructor:\t" << this << endl;
+		}
+		operator const int&()const
+		{
+			return this->Data;
+		}
+		operator int&()
+		{
+			return this->Data;
+		}
+		friend class ForwardList;
+	};
 	Element* Head;	//Указатель на начало списка
 	unsigned int size;
 public:
+	class Iterator
+	{
+		Element* Temp;
+	public:
+		Iterator(Element* Temp = nullptr):Temp(Temp)
+		{
+			cout << "ItConstructor:\t" << this << endl;
+		}
+		~Iterator()
+		{
+			cout << "ItDestructor:\t" << this << endl;
+		}
+		Iterator& operator++()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		Iterator operator++(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		const int& operator*()const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+		bool operator==(const Iterator& other)
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const Iterator& other)
+		{
+			return this->Temp != other.Temp;
+		}
+	};
 	const int get_size()const
 	{
 		return this->size;
 	}
 
-	Element* begin()
+	const Iterator begin()const
+	{
+		return Head;
+	}
+	Iterator begin()
 	{
 		return Head;
 	}
 
-	Element* end()
+	const Iterator end() const
+	{
+		return nullptr;
+	}
+	Iterator end()
 	{
 		return nullptr;
 	}
@@ -59,7 +114,7 @@ public:
 		this->size = 0;
 		cout << "LConstructor:\t" << this << endl;
 	}
-	ForwardList(int size):ForwardList()
+	ForwardList(int size) :ForwardList()
 	{
 		/*this->Head = nullptr;
 		this->size = 0;*/
@@ -71,7 +126,7 @@ public:
 		for (int const* it = il.begin(); it != il.end(); it++)
 			push_back(*it);
 	}
-	ForwardList(const ForwardList& other):ForwardList()
+	ForwardList(const ForwardList& other) :ForwardList()
 	{
 		for (Element* Temp = other.Head; Temp != nullptr; Temp = Temp->pNext)
 			push_back(Temp->Data);
@@ -201,11 +256,13 @@ public:
 		//	Temp = Temp->pNext;	//Переход на следующий элемент.
 		//}
 
-		for(Element* Temp = Head; Temp!= nullptr; Temp = Temp->pNext)
+		for (Element* Temp = Head; Temp != nullptr; Temp = Temp->pNext)
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "Количество элементво списка: " << size << endl;
 	}
 };
+
+int ForwardList::Element::count = 0;
 
 void main()
 {
@@ -281,10 +338,12 @@ void main()
 	for (char i : str)
 		cout << i << tab;
 	cout << endl;
-	ForwardList fl = { 3, 5, 8, 13, 21 };
+	ForwardList fl = { 666, 5, 8, 13, 21 };
+	system("COLOR 0A");
 	for (int i : fl)
 	{
 		cout << i << tab;
 	}
 	cout << endl;
+	//cout << sizeof(ForwardList::Element) << endl;
 }

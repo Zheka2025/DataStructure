@@ -1,4 +1,7 @@
 TODO:
+Написать оператор +
+
+TODO:
 CopyConstructor;
 CopyAssignment;
 operator+;
