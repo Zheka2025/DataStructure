@@ -8,6 +8,7 @@ using std::endl;
 
 //#define BASE_CHECK
 //#define INDEX_OPERATOR_CHECK
+//#define CONSTRUCTORS_CHECK
 
 class Element
 {
@@ -41,6 +42,17 @@ public:
 	{
 		return this->size;
 	}
+
+	Element* begin()
+	{
+		return Head;
+	}
+
+	Element* end()
+	{
+		return nullptr;
+	}
+
 	ForwardList()
 	{
 		this->Head = nullptr;
@@ -53,6 +65,18 @@ public:
 		this->size = 0;*/
 		while (size--)push_front(0);
 	}
+	ForwardList(initializer_list<int> il) :ForwardList()
+	{
+		cout << typeid(il.begin()).name() << endl;
+		for (int const* it = il.begin(); it != il.end(); it++)
+			push_back(*it);
+	}
+	ForwardList(const ForwardList& other):ForwardList()
+	{
+		for (Element* Temp = other.Head; Temp != nullptr; Temp = Temp->pNext)
+			push_back(Temp->Data);
+		cout << "LCopyConstruct:\t" << this << endl;
+	}
 	~ForwardList()
 	{
 		while (Head)pop_front();
@@ -60,6 +84,15 @@ public:
 	}
 
 	//			Operators:
+	ForwardList& operator=(const ForwardList& other)
+	{
+		if (this == &other)return *this;
+		while (Head)pop_front();
+		for (Element* Temp = other.Head; Temp != nullptr; Temp = Temp->pNext)
+			push_back(Temp->Data);
+		cout << "LCopyAssignment:\t" << this << endl;
+		return *this;
+	}
 	int& operator[](int index)
 	{
 		Element* Temp = Head;
@@ -159,14 +192,17 @@ public:
 
 	void print()
 	{
-		Element* Temp = Head;//Temp - Итератор.
-		//Итератор - это указатель, при помощи которого можно получить доступ
-		//к элементам структуры данных.
-		while (Temp != nullptr)
-		{
+		//Element* Temp = Head;//Temp - Итератор.
+		////Итератор - это указатель, при помощи которого можно получить доступ
+		////к элементам структуры данных.
+		//while (Temp != nullptr)
+		//{
+		//	cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
+		//	Temp = Temp->pNext;	//Переход на следующий элемент.
+		//}
+
+		for(Element* Temp = Head; Temp!= nullptr; Temp = Temp->pNext)
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
-			Temp = Temp->pNext;	//Переход на следующий элемент.
-		}
 		cout << "Количество элементво списка: " << size << endl;
 	}
 };
@@ -175,7 +211,7 @@ void main()
 {
 	setlocale(LC_ALL, "");
 	int n;		//Количество элементов
-	cout << "Введите количество элементов: ";	cin >> n;
+	//cout << "Введите количество элементов: ";	cin >> n;
 #ifdef BASE_CHECK
 	ForwardList fl;
 	for (int i = 0; i < n; i++)
@@ -221,4 +257,34 @@ void main()
 	cout << endl;
 #endif // INDEX_OPERATOR_CHECK
 
+#ifdef CONSTRUCTORS_CHECK
+	ForwardList fl = { 3, 5, 8, 13, 21 };
+	fl.print();
+	fl = fl;
+	fl.print();
+#endif
+
+	int Arr[] = { 3, 5, 8, 13, 21 };
+	for (int i = 0; i < sizeof(Arr) / sizeof(int); i++)
+	{
+		cout << Arr[i] << tab;
+	}
+	cout << endl;
+
+	for (int i : Arr)
+	{
+		cout << i << tab;
+	}
+	cout << endl;
+
+	char str[] = "Hello";
+	for (char i : str)
+		cout << i << tab;
+	cout << endl;
+	ForwardList fl = { 3, 5, 8, 13, 21 };
+	for (int i : fl)
+	{
+		cout << i << tab;
+	}
+	cout << endl;
 }
